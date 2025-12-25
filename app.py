@@ -24,6 +24,7 @@ start_date = st.sidebar.date_input("Start Date", date.today() - timedelta(days=3
 end_date = st.sidebar.date_input("End Date", date.today())
 horizon = st.sidebar.number_input("Forecast Horizon (days)", value=30, min_value=1, max_value=90)
 model_type = st.sidebar.selectbox("Model", ["ALL", "Moving Average", "Random Forest", "LightGBM", "AutoMFLES"])
+tune_models = st.sidebar.checkbox("Tune Models (Optuna)", value=False)
 
 # Fetch Data Button
 if st.sidebar.button("Fetch / Update Data"):
@@ -90,7 +91,7 @@ else:
             cls = model_registry[m_name]
             model = cls(horizon=horizon) # Params from config
             
-            model.train(df)
+            model.train(df, tune=tune_models)
             f_df = model.predict(df, horizon=horizon)
             forecasts[m_name] = f_df
             
